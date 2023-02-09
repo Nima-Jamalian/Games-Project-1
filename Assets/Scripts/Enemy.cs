@@ -25,6 +25,7 @@ public class Enemy : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Laser") == true)
         {
+            Destroy(collision.gameObject);
             Destroy(this.gameObject);
         }
 
