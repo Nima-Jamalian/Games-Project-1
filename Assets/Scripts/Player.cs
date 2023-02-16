@@ -4,18 +4,25 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Player Properties")]
     float objectScaleUnit;
+    GameManager gameManager;
     [SerializeField] float speed = 1f;
+    [Header("Shooting")]
     [SerializeField] float fireRate = 1f;
     float fireTimer = 0;
-    [SerializeField] GameObject laser;
-    GameManager gameManager;
+    [SerializeField] GameObject laserPrefab,tripleShotLaserPrefab;
+    [Header("Power Ups")]
+    [SerializeField] float powerUpDuration = 3f;
+    [SerializeField] float speedIncreament = 5f;
+    bool isSpeedPowerUpActive = false;
+    bool isTripleShotPowerUpActive = false;
     // Start is called before the first frame update
     void Start()
     {
         objectScaleUnit = transform.localScale.x / 2;
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        Debug.Log(gameManager.worldSizeWidth);
+        //Debug.Log(gameManager.worldSizeWidth);
     }
 
     // Update is called once per frame
@@ -53,11 +60,36 @@ public class Player : MonoBehaviour
                 fireTimer = Time.time + fireRate;
                 //Debug.Log("Time:" + Time.time);
                 //Debug.Log("Fire Time: " + fireTimer);
-                Instantiate(laser, transform.position, Quaternion.identity);
+                if(isTripleShotPowerUpActive == false)
+                {
+                    Instantiate(laserPrefab, transform.position, transform.rotation);
+                } else
+                {
+                    Instantiate(tripleShotLaserPrefab, transform.position, transform.rotation);
+                }
             }
             //laser.transform.position = transform.position;
             //laser.SetActive(true);
         }
+    }
+
+    IEnumerator ActivateSpeedPowerUp()
+    {
+        if(isSpeedPowerUpActive == false)
+        {
+            isSpeedPowerUpActive = true;
+            speed = speed + speedIncreament;
+            yield return new WaitForSeconds(powerUpDuration);
+            speed = speed - speedIncreament;
+            isSpeedPowerUpActive = false;
+        }
+    }
+
+    IEnumerator ActivateTripleShotPowerUp()
+    {
+        isTripleShotPowerUpActive = true;
+        yield return new WaitForSeconds(powerUpDuration);
+        isTripleShotPowerUpActive = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -65,6 +97,18 @@ public class Player : MonoBehaviour
         if(collision.gameObject.CompareTag("Enemy") == true)
         {
             Destroy(this.gameObject);
+        }
+
+        if(collision.gameObject.CompareTag("SpeedPowerUp") == true)
+        {
+            StartCoroutine(ActivateSpeedPowerUp());
+            Destroy(collision.gameObject);
+        }
+
+        if(collision.gameObject.CompareTag("TripleShotPowerUp") == true)
+        {
+            StartCoroutine(ActivateTripleShotPowerUp());
+            Destroy(collision.gameObject);
         }
     }
 }

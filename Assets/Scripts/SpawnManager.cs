@@ -7,16 +7,19 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] GameObject enemyPrefab;
     [SerializeField] float enemySpawnRate;
     [SerializeField] bool canSpawn = true;
-
+    [SerializeField] GameObject[] powerUpPrefabs;
+    [SerializeField] float speedPowerUpSpawnRate;
+    GameManager gameManager;
+    float worldSizeWidth;
+    float worldSizeHeight;
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        worldSizeWidth = gameManager.worldSizeWidth;
+        worldSizeHeight = gameManager.worldSizeHight;
         StartCoroutine(SpawnEnemey());
-
-
-        //Debug.Log(Screen.height);
-        //Debug.Log()
+        StartCoroutine(SpawnPowerUp());
     }
 
     // Update is called once per frame
@@ -30,8 +33,18 @@ public class SpawnManager : MonoBehaviour
     {
         while (canSpawn == true)
         {
-            Instantiate(enemyPrefab, new Vector3(Random.Range(-2.7f,2.7f), 6.15f, 0), Quaternion.identity);
+            Instantiate(enemyPrefab, new Vector3(Random.Range(-worldSizeWidth,worldSizeWidth), worldSizeHeight * 2, 0), Quaternion.identity);
             yield return new WaitForSeconds(enemySpawnRate);
+        }
+    }
+
+    IEnumerator SpawnPowerUp()
+    {
+        while(canSpawn == true)
+        {
+            int randomPowerUp = Random.Range(0, powerUpPrefabs.Length);
+            Instantiate(powerUpPrefabs[randomPowerUp], new Vector3(Random.Range(-worldSizeWidth, worldSizeWidth), worldSizeHeight * 2, 0), Quaternion.identity);
+            yield return new WaitForSeconds(speedPowerUpSpawnRate);
         }
     }
 }
