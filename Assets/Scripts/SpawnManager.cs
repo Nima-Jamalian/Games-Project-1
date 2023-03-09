@@ -33,7 +33,7 @@ public class SpawnManager : MonoBehaviour
     {
         while (canSpawn == true)
         {
-            Instantiate(enemyPrefab, new Vector3(Random.Range(-worldSizeWidth, worldSizeWidth), worldSizeHeight * 2, 0), Quaternion.identity);
+            Instantiate(enemyPrefab, new Vector3(Random.Range(-worldSizeWidth, worldSizeWidth), worldSizeHeight * 2, 0), Quaternion.Euler(0, 0, 180));
             yield return new WaitForSeconds(enemySpawnRate);
         }
     }

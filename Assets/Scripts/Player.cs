@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [Header("Player Properties")]
-    [SerializeField] float health = 3;
+    [SerializeField] int health = 3;
     bool isSheildActive = false;
     float objectScaleUnit;
     GameManager gameManager;
@@ -19,12 +19,18 @@ public class Player : MonoBehaviour
     [SerializeField] float speedIncreament = 5f;
     bool isSpeedPowerUpActive = false;
     bool isTripleShotPowerUpActive = false;
+    //Audio
+    AudioSource audioSource;
+    //UI
+    UIManager uIManager;
     // Start is called before the first frame update
     void Start()
     {
         objectScaleUnit = transform.localScale.x / 2;
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         //Debug.Log(gameManager.worldSizeWidth);
+        uIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -59,6 +65,8 @@ public class Player : MonoBehaviour
 
             if (Time.time > fireTimer)
             {
+                //Player Audio
+                audioSource.Play();
                 fireTimer = Time.time + fireRate;
                 //Debug.Log("Time:" + Time.time);
                 //Debug.Log("Fire Time: " + fireTimer);
@@ -102,11 +110,14 @@ public class Player : MonoBehaviour
             ActivateSheild(false);
         } else
         {
+
             health--;
             if (health < 0)
             {
+                health = 0;
                 Destroy(this.gameObject);
             }
+            uIManager.UpldateHealthUI(health);
         }
     }
 
