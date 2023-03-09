@@ -98,7 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a29547942ae6402dbbdf4de8bed7b4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
+  playerLaserSpeed: 5
+  enemyLaserSpeed: 10
+  isEnemyLaser: 0
+  isPlayerLaser: 1
 --- !u!61 &2966348256193383987
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -136,7 +139,7 @@ GameObject:
   - component: {fileID: 344822674848849102}
   m_Layer: 0
   m_Name: TripleShotLaser
-  m_TagString: Untagged
+  m_TagString: TripleShotPowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -257,7 +260,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a29547942ae6402dbbdf4de8bed7b4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
+  playerLaserSpeed: 5
+  enemyLaserSpeed: 10
+  isEnemyLaser: 0
+  isPlayerLaser: 1
 --- !u!61 &582978012481106547
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -382,7 +388,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a29547942ae6402dbbdf4de8bed7b4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
+  playerLaserSpeed: 5
+  enemyLaserSpeed: 10
+  isEnemyLaser: 0
+  isPlayerLaser: 1
 --- !u!61 &8779684564927348308
 BoxCollider2D:
   m_ObjectHideFlags: 0

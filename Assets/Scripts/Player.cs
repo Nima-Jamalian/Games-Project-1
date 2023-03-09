@@ -5,6 +5,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [Header("Player Properties")]
+    [SerializeField] float health = 3;
+    bool isSheildActive = false;
     float objectScaleUnit;
     GameManager gameManager;
     [SerializeField] float speed = 1f;
@@ -62,7 +64,8 @@ public class Player : MonoBehaviour
                 //Debug.Log("Fire Time: " + fireTimer);
                 if(isTripleShotPowerUpActive == false)
                 {
-                    Instantiate(laserPrefab, transform.position, transform.rotation);
+                    GameObject myLaser = Instantiate(laserPrefab, transform.position, transform.rotation);
+                    myLaser.GetComponent<Laser>().isPlayerLaser = true;
                 } else
                 {
                     Instantiate(tripleShotLaserPrefab, transform.position, transform.rotation);
@@ -92,11 +95,54 @@ public class Player : MonoBehaviour
         isTripleShotPowerUpActive = false;
     }
 
+    private void TakeDamage()
+    {
+        if(isSheildActive == true)
+        {
+            ActivateSheild(false);
+        } else
+        {
+            health--;
+            if (health < 0)
+            {
+                Destroy(this.gameObject);
+            }
+        }
+    }
+
+    private void ActivateSheild(bool value)
+    {
+        isSheildActive = value;
+        if(value == true)
+        {
+            GetComponent<SpriteRenderer>().color = Color.blue;
+        } else
+        {
+            GetComponent<SpriteRenderer>().color = Color.white;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
         if(collision.gameObject.CompareTag("Enemy") == true)
         {
-            Destroy(this.gameObject);
+            TakeDamage();
+        }
+
+        if(collision.gameObject.CompareTag("Laser") == true)
+        {
+            if(collision.gameObject.GetComponent<Laser>().isPlayerLaser == false)
+            {
+                TakeDamage();
+            }
+        }
+
+        if(collision.gameObject.CompareTag("ShieldPowerUp") == true)
+        {
+            Debug.Log("I have sheild!");
+            ActivateSheild(true);
+            Destroy(collision.gameObject);
         }
 
         if(collision.gameObject.CompareTag("SpeedPowerUp") == true)
