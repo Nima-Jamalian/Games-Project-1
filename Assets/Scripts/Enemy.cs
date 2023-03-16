@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour
     {
         if (isAlive == true)
         {
-            transform.Translate(Vector3.up * Time.deltaTime * speed);
+            transform.Translate(Vector3.down * Time.deltaTime * speed);
             Shootin();
         }
     }
@@ -38,35 +38,31 @@ public class Enemy : MonoBehaviour
         {
             currentFireTime = 0;
             GameObject myLaser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
-            myLaser.GetComponent<Laser>().isEnemyLaser = true;
         }
     }
 
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //if(collision.gameObject.name == "Laser(Clone)") {
-        //    Destroy(this.gameObject);
-        //}
-
-        if (collision.gameObject.CompareTag("Laser") == true)
-        {
-            if(collision.GetComponent<Laser>().isPlayerLaser == true)
+        if(isAlive == true) {
+            if (collision.gameObject.CompareTag("PlayerLaser"))
             {
                 Destroy(collision.gameObject);
                 StartCoroutine(Death());
             }
+            else if (collision.gameObject.CompareTag("Player"))
+            {
+                StartCoroutine(Death());
+            }
         }
-        //Debug.Log(collision.gameObject.name);
     }
 
     IEnumerator Death()
     {
-        gameManager.UpdateScore();
         animator.SetTrigger("Explostion");
         audioSource.Play();
-        yield return new WaitForSeconds(0.5f);
+        gameManager.UpdateScore();
         isAlive = false;
+        yield return new WaitForSeconds(0.5f);
         Destroy(this.gameObject,2f);
     }
 

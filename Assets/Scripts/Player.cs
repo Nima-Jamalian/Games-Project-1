@@ -10,17 +10,27 @@ public class Player : MonoBehaviour
     float objectScaleUnit;
     GameManager gameManager;
     [SerializeField] float speed = 1f;
+
     [Header("Shooting")]
     [SerializeField] float fireRate = 1f;
     float fireTimer = 0;
     [SerializeField] GameObject laserPrefab,tripleShotLaserPrefab;
+
     [Header("Power Ups")]
     [SerializeField] float powerUpDuration = 3f;
     [SerializeField] float speedIncreament = 5f;
     bool isSpeedPowerUpActive = false;
     bool isTripleShotPowerUpActive = false;
-    //Audio
+
+    [Header("Visual Effects")]
+    [SerializeField] GameObject[] wingFire;
+    [SerializeField] GameObject sheildPowerUp;
+
+    [Header("Audio Effect")]
+    [SerializeField] AudioClip fireLaserAudioClip;
+    [SerializeField] AudioClip explotionAudioClip;
     AudioSource audioSource;
+
     //UI
     UIManager uIManager;
     // Start is called before the first frame update
@@ -66,6 +76,7 @@ public class Player : MonoBehaviour
             if (Time.time > fireTimer)
             {
                 //Player Audio
+                audioSource.clip = fireLaserAudioClip;
                 audioSource.Play();
                 fireTimer = Time.time + fireRate;
                 //Debug.Log("Time:" + Time.time);
@@ -110,11 +121,17 @@ public class Player : MonoBehaviour
             ActivateSheild(false);
         } else
         {
-
             health--;
+            if(health == 2) {
+                wingFire[0].SetActive(true);
+            }
+            if(health == 1) {
+                wingFire[1].SetActive(true);
+            }
             if (health < 0)
             {
                 health = 0;
+                uIManager.DisplayGameOverPanle(true);
                 Destroy(this.gameObject);
             }
             uIManager.UpldateHealthUI(health);
@@ -124,13 +141,7 @@ public class Player : MonoBehaviour
     private void ActivateSheild(bool value)
     {
         isSheildActive = value;
-        if(value == true)
-        {
-            GetComponent<SpriteRenderer>().color = Color.blue;
-        } else
-        {
-            GetComponent<SpriteRenderer>().color = Color.white;
-        }
+        sheildPowerUp.SetActive(value);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -141,12 +152,11 @@ public class Player : MonoBehaviour
             TakeDamage();
         }
 
-        if(collision.gameObject.CompareTag("Laser") == true)
+        if(collision.gameObject.CompareTag("EnemyLaser") == true)
         {
-            if(collision.gameObject.GetComponent<Laser>().isPlayerLaser == false)
-            {
-                TakeDamage();
-            }
+            audioSource.clip = explotionAudioClip;
+            audioSource.Play();
+            TakeDamage();
         }
 
         if(collision.gameObject.CompareTag("ShieldPowerUp") == true)
